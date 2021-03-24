@@ -22,9 +22,9 @@ public class PlayerController : MonoBehaviour
         carBody.AddTorque(Moto.WHEELINGMAXTORQUE * multiplier);
     }
 
-    public void StopWheeling()
+    public void StopWheeling(float multiplier)
     {
-        carBody.AddTorque(0);
+        carBody.AddTorque(Moto.STOPWHEELINGMAXTORQUE * multiplier);
     }
 
     public void RotateBack(float multiplier)

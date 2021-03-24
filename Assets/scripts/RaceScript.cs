@@ -53,20 +53,23 @@ public class RaceScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckDistance();
         if (!finished)
         {
-            MoveCame();
+            CheckDistance();
+            if (!finished)
+            {
+                MoveCame();
 
-            if (playerCtlr.IsInFloor(floorMask))
-            {
-                FloorControle();
+                if (playerCtlr.IsInFloor(floorMask))
+                {
+                    FloorControle();
+                }
+                else
+                {
+                    AirControle();
+                }
+                CheckInput();
             }
-            else
-            {
-                AirControle();
-            }
-            CheckInput();
         }
     }
 
@@ -82,7 +85,7 @@ public class RaceScript : MonoBehaviour
         }
         else
         {
-            playerCtlr.StopWheeling();
+            playerCtlr.StopWheeling(-dirStick.Horizontal);
         }
     }
     void AirControle()
