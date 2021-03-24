@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class RaceScript : MonoBehaviour
 {
     public GameObject cam, endPanel, timerText;
-    public Joystick speedStick;
+    public FixedJoystick speedStick;
     public Slider progression;
     public Text expectedTime, realTimeText, moneyText;
 
@@ -111,7 +111,7 @@ public class RaceScript : MonoBehaviour
             playerCtlr.Backward(pression);
         }
 
-
+        
         else if (speedStick.Horizontal > 0)
         {
             playerCtlr.Forward(speedStick.Horizontal);

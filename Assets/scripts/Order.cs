@@ -22,7 +22,7 @@ public class Order : MonoBehaviour
         transform.position = new Vector3(Random.Range(0, Screen.width), Random.Range(0, Screen.height));
         GetComponent<Image>().color = Random.ColorHSV();
         time = SHOWINGTIME;
-        text.text = "test";
+        text.text = comment;
     }
 
     private void Update()
