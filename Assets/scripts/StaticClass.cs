@@ -5,6 +5,6 @@ using UnityEngine;
 public static class StaticClass
 {
     public static Moto moto { get; set; } = null;
-    public static int raceLonger { get; set; }
-    public static int raceTime { get; set; }
+    public static float raceLonger { get; set; }
+    public static float raceMoney { get; set; }
 }

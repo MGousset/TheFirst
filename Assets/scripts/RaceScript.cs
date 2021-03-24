@@ -5,19 +5,20 @@ using UnityEngine.SceneManagement;
 public class RaceScript : MonoBehaviour
 {
     public GameObject cam, endPanel, timerText;
-    public FixedJoystick speedStick;
+    public FixedJoystick speedStick, dirStick;
     public Slider progression;
     public Text expectedTime, realTimeText, moneyText;
 
-    private int raceLonger, raceTime;
+    private float raceLonger, raceTime, raceMoney;
     private Moto moto;
     private GameObject player;
     PlayerController playerCtlr;
     private Vector3 offset;
     private Vector2 startPos;
-    private int time = 0;
+    private int time;
     private float cash;
     private bool finished = false;
+    private int limiteY = 2;
 
     private LayerMask floorMask;
 
@@ -25,16 +26,20 @@ public class RaceScript : MonoBehaviour
     void Start()
     {
         floorMask = LayerMask.GetMask("floor");
-
+        time = 0;
         moto = StaticClass.moto;
         raceLonger = StaticClass.raceLonger;
-        raceTime = StaticClass.raceTime;
+        raceMoney = StaticClass.raceMoney;
+
         if (moto == null)
         {
             moto = new Moto("motoTest");
-            raceLonger = 100;
+            raceLonger = 1;
             raceTime = 10;
+            raceMoney = 5;
         }
+        raceTime = raceLonger *20;
+
         player = Instantiate(Resources.Load(moto.name)) as GameObject;
         playerCtlr = player.GetComponent<PlayerController>();
         playerCtlr.moto = moto;
@@ -48,44 +53,55 @@ public class RaceScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckDistance();
         if (!finished)
         {
-            moveCame();
+            MoveCame();
 
             if (playerCtlr.IsInFloor(floorMask))
             {
-                floorControle();
+                FloorControle();
             }
             else
             {
-                airControle();
+                AirControle();
             }
-            checkInput();
-
-            isFinished();
+            CheckInput();
         }
     }
 
-    public void floorControle()
+    public void FloorControle()
     {
         if (Input.GetKey("q"))
         {
-            playerCtlr.Wheeling();
+            playerCtlr.Wheeling(1);
+        }
+        else if (dirStick.Horizontal < 0)
+        {
+            playerCtlr.Wheeling(- dirStick.Horizontal);
         }
         else
         {
             playerCtlr.StopWheeling();
         }
     }
-    void airControle()
+    void AirControle()
     {
-        if (Input.GetKey("q"))
+        if (Input.GetKey("d"))
         {
-            playerCtlr.RotateBack();
+            playerCtlr.RotateFront(1);
         }
-        else if (Input.GetKey("d"))
+        else if (Input.GetKey("q"))
         {
-            playerCtlr.RotateFront();
+            playerCtlr.RotateBack(1);
+        }
+        else if (dirStick.Horizontal > 0)
+        {
+            playerCtlr.RotateFront(dirStick.Horizontal);
+        }
+        else if (dirStick.Horizontal < 0)
+        {
+            playerCtlr.RotateBack(-dirStick.Horizontal);
         }
         else
         {
@@ -93,13 +109,24 @@ public class RaceScript : MonoBehaviour
         }
     }
 
-    void moveCame()
+    void MoveCame()
     {
-        Debug.Log(player.transform.position);
-        cam.transform.position = player.transform.position + offset;
+        float posX = player.transform.position.x + offset.x;
+        float posY = cam.transform.position.y;
+        if (cam.transform.position.y + limiteY < player.transform.position.y)
+        {
+            posY = player.transform.position.y - limiteY;
+        }
+        
+        else if(cam.transform.position.y - offset.y > player.transform.position.y)
+        {
+            posY = player.transform.position.y + offset.y;
+        }
+
+        cam.transform.position = new Vector3(posX, posY, -10);
     }
 
-    void checkInput()
+    void CheckInput()
     {
         float pression = Input.GetAxis("Horizontal");
         if (pression > 0)
@@ -110,8 +137,6 @@ public class RaceScript : MonoBehaviour
         {
             playerCtlr.Backward(pression);
         }
-
-        
         else if (speedStick.Horizontal > 0)
         {
             playerCtlr.Forward(speedStick.Horizontal);
@@ -127,11 +152,11 @@ public class RaceScript : MonoBehaviour
         }
     }
 
-    void isFinished()
+    void CheckDistance()
     {
         time = (int)Time.realtimeSinceStartup;
         timerText.GetComponent<Text>().text ="Time :" + time + "s";
-        float distance = (player.transform.position.x - startPos.x) / raceLonger;
+        float distance = (player.transform.position.x - startPos.x) / (raceLonger*100);
         progression.value = distance;
         if (distance > 1)
         {
@@ -139,13 +164,17 @@ public class RaceScript : MonoBehaviour
             timerText.SetActive(false);
             expectedTime.text = raceTime.ToString();
             realTimeText.text = time.ToString();
-            cash = (5 + (raceTime - time) / 2);
+            cash = raceMoney;
+            if (time < 0.80 * raceTime)
+            {
+                cash *= 1.5f;
+            }
             moneyText.text = "Cash :" + cash;
             endPanel.SetActive(true);
         }
     }
 
-    public void returnToMenu()
+    public void ReturnToMenu()
     {
         endPanel.SetActive(false);
         SceneManager.LoadScene("mapScene");

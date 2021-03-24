@@ -44,6 +44,10 @@ public class Map : MonoBehaviour
 
     public void ShowRacePanel(Order order)
     {
+        if (this.order)
+        {
+            this.order.textGameObject.SetActive(false);
+        }
         lunchRacePanel.SetActive(true);
         this.order = order;
     }
@@ -70,7 +74,7 @@ public class Map : MonoBehaviour
         lunchRacePanel.SetActive(false);
         StaticClass.moto = moto;
         
-        (StaticClass.raceLonger, StaticClass.raceTime) = order.getRaceInfo();
+        (StaticClass.raceLonger, StaticClass.raceMoney) = order.getRaceInfo();
         order = null;
         SceneManager.LoadScene("raceScene");
     }

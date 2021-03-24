@@ -10,7 +10,7 @@ public class Moto
     public static int RATATIONSPEED { get; }  = 500;
     public static int MOTOMAXTORQUE { get; }  = 400;
     public static int COUNTERTORQUE { get; }  = 1500;
-    public static int WHEELINGMAXTORQUE { get; }  = 600;
+    public static int WHEELINGMAXTORQUE { get; }  = 1000;
 
     public Moto(string motoName)
     {

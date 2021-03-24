@@ -16,9 +16,10 @@ public class PlayerController : MonoBehaviour
         return (frontWheelCollider.IsTouchingLayers(floorMask) || backWheelCollider.IsTouchingLayers(floorMask));
     }
 
-    public void Wheeling()
+    public void Wheeling(float multiplier)
     {
-        carBody.AddTorque(Moto.WHEELINGMAXTORQUE);
+        Debug.Log(multiplier);
+        carBody.AddTorque(Moto.WHEELINGMAXTORQUE * multiplier);
     }
 
     public void StopWheeling()
@@ -26,7 +27,8 @@ public class PlayerController : MonoBehaviour
         carBody.AddTorque(0);
     }
 
-    public void RotateBack(){
+    public void RotateBack(float multiplier)
+    {
         if (carBody.angularVelocity < 0)
         {
             carBody.AddTorque(Moto.COUNTERTORQUE);
@@ -37,12 +39,13 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            carBody.AddTorque(Moto.MOTOMAXTORQUE);
+            carBody.AddTorque(Moto.MOTOMAXTORQUE * multiplier);
         }
     }
 
-    public void RotateFront()
+    public void RotateFront(float multiplier)
     {
+        Debug.Log(multiplier);
         if (carBody.angularVelocity > 0)
         {
             carBody.AddTorque(-Moto.COUNTERTORQUE);
@@ -53,7 +56,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            carBody.AddTorque(-Moto.MOTOMAXTORQUE);
+            carBody.AddTorque(-Moto.MOTOMAXTORQUE * multiplier);
         }
     }
     public void StopRotate()

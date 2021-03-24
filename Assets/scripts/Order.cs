@@ -7,22 +7,22 @@ public class Order : MonoBehaviour
 {
     private Map mapScript;
     private static int SHOWINGTIME = 15;
-    public string comment =  "J'ai faim";
-
-    public int raceTime { get; set; }
-    public int raceLonger { get; set; }
     private float time;
+
+    public string comment =  "J'ai faim";
+    public float raceLonger { get; set; }
+    public float raceMoney { get; set; }
     public GameObject textGameObject;
     public Text text;
 
     public void Start()
     {
-        raceLonger = Random.Range(2, 10);
-        raceTime = raceLonger * 3600 / 50;
-        transform.position = new Vector3(Random.Range(0, Screen.width), Random.Range(0, Screen.height));
+        raceLonger = Random.Range(2, 5);
+        raceMoney = Random.Range(2, 5);
+        transform.position = new Vector3(Random.Range(100, Screen.width-100), Random.Range(400, Screen.height-300));
         GetComponent<Image>().color = Random.ColorHSV();
         time = SHOWINGTIME;
-        text.text = comment;
+        text.text = raceLonger.ToString() + "km, " + raceMoney + "$";
     }
 
     private void Update()
@@ -38,11 +38,12 @@ public class Order : MonoBehaviour
     {
         mapScript = map;
         transform.SetParent(map.GetComponent<Transform>());
+        transform.localScale = new Vector2(1, 1);
     }
 
-    public (int, int) getRaceInfo()
+    public (float, float) getRaceInfo()
     {
-        return (raceLonger, raceTime);
+        return (raceLonger, raceMoney);
     }
 
     public void refuseRace()
