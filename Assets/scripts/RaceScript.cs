@@ -15,7 +15,7 @@ public class RaceScript : MonoBehaviour
     PlayerController playerCtlr;
     private Vector3 offset;
     private Vector2 startPos;
-    private int time;
+    private float time;
     private float cash;
     private bool finished = false;
     private int limiteY = 2;
@@ -51,7 +51,7 @@ public class RaceScript : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!finished)
         {
@@ -79,13 +79,13 @@ public class RaceScript : MonoBehaviour
         {
             playerCtlr.Wheeling(1);
         }
-        else if (dirStick.Horizontal < 0)
+        else if (dirStick.Horizontal <= 0)
         {
             playerCtlr.Wheeling(- dirStick.Horizontal);
         }
         else
         {
-            playerCtlr.StopWheeling(-dirStick.Horizontal);
+            playerCtlr.StopWheeling();
         }
     }
     void AirControle()
@@ -99,6 +99,9 @@ public class RaceScript : MonoBehaviour
             playerCtlr.RotateBack(1);
         }
         else if (dirStick.Horizontal > 0)
+        {
+            playerCtlr.RotateFront(dirStick.Horizontal);
+        }        else if (dirStick.Horizontal > 0)
         {
             playerCtlr.RotateFront(dirStick.Horizontal);
         }
@@ -157,8 +160,8 @@ public class RaceScript : MonoBehaviour
 
     void CheckDistance()
     {
-        time = (int)Time.realtimeSinceStartup;
-        timerText.GetComponent<Text>().text ="Time :" + time + "s";
+        time += Time.deltaTime;
+        timerText.GetComponent<Text>().text ="Time :" + (int)time + "s";
         float distance = (player.transform.position.x - startPos.x) / (raceLonger*100);
         progression.value = distance;
         if (distance > 1)

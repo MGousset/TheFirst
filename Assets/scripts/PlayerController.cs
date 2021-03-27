@@ -18,13 +18,12 @@ public class PlayerController : MonoBehaviour
 
     public void Wheeling(float multiplier)
     {
-        Debug.Log(multiplier);
         carBody.AddTorque(Moto.WHEELINGMAXTORQUE * multiplier);
     }
 
-    public void StopWheeling(float multiplier)
+    public void StopWheeling()
     {
-        carBody.AddTorque(Moto.STOPWHEELINGMAXTORQUE * multiplier);
+        carBody.AddTorque(Moto.STOPWHEELINGMAXTORQUE);
     }
 
     public void RotateBack(float multiplier)

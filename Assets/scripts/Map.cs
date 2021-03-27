@@ -22,6 +22,7 @@ public class Map : MonoBehaviour
     void Update()
     {
         CountTen();
+        getTouch();
     }
     void CountTen()
     {
@@ -77,5 +78,47 @@ public class Map : MonoBehaviour
         (StaticClass.raceLonger, StaticClass.raceMoney) = order.getRaceInfo();
         order = null;
         SceneManager.LoadScene("raceScene");
+    }
+
+    void getTouch()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Moved)
+            {
+                Move(touch.deltaPosition);
+            }
+            else if (Input.touchCount == 2)
+            {
+                float dist=100;
+                Touch touch2 = Input.GetTouch(1);
+                if (touch2.phase == TouchPhase.Began)
+                {
+                    dist = (touch2.position - touch.position).magnitude;
+                }
+                else if (touch2.phase == TouchPhase.Moved || touch.phase == TouchPhase.Moved)
+                {
+                    Zoom((touch2.position - touch.position).magnitude / dist);
+                }
+            }
+        }
+    }
+
+    public void Zoom(float zoom)
+    {
+        Debug.Log("zoom");
+        transform.localScale *= zoom;
+    }
+    public void Move()
+    {
+        Debug.Log("move");
+        Move(new Vector3(5, 5, 0));
+    }
+    public void Move(Vector3 move)
+    {
+        Debug.Log("move");
+        transform.Translate(move);
     }
 }
