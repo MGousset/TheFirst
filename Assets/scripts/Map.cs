@@ -7,10 +7,12 @@ using UnityEngine.SceneManagement;
 
 public class Map : MonoBehaviour
 {
+    public Text test;
     Moto moto;
     Order order = null;
     float time;
     public int popTime;
+    float dist, newDist;
     public GameObject lunchRacePanel;
     // Start is called before the first frame update
     void Start()
@@ -86,30 +88,52 @@ public class Map : MonoBehaviour
         {
             Touch touch = Input.GetTouch(0);
 
-            if (touch.phase == TouchPhase.Moved)
+            if (Input.touchCount == 2)
             {
-                Move(touch.deltaPosition);
-            }
-            else if (Input.touchCount == 2)
-            {
-                float dist=100;
                 Touch touch2 = Input.GetTouch(1);
                 if (touch2.phase == TouchPhase.Began)
                 {
                     dist = (touch2.position - touch.position).magnitude;
+                    test.text = dist.ToString();
                 }
+                
                 else if (touch2.phase == TouchPhase.Moved || touch.phase == TouchPhase.Moved)
                 {
-                    Zoom((touch2.position - touch.position).magnitude / dist);
+                    newDist = (touch2.position - touch.position).magnitude;
+                    float ratio = newDist / dist;
+                    test.text = ratio.ToString();
+                    Zoom(ratio);
+                    dist = newDist;
                 }
+            }
+            else if (touch.phase == TouchPhase.Moved)
+            {
+                Move(touch.deltaPosition);
             }
         }
     }
 
     public void Zoom(float zoom)
     {
+        
         Debug.Log("zoom");
-        transform.localScale *= zoom;
+        if (transform.localScale.x < 10 || transform.localScale.x > 0.5)
+        {
+            Vector3 pos = transform.localPosition;
+            if (transform.localScale.x * zoom > 10)
+            {
+                zoom = 10 / transform.localScale.x;
+            }
+            else if (transform.localScale.x * zoom < 0.5)
+            {
+                zoom = 0.5f / transform.localScale.x;
+            }
+            else
+            {
+                transform.localScale *= zoom;
+                transform.localPosition = pos * zoom;
+            }
+        }
     }
     public void Move()
     {
